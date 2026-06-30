@@ -1,0 +1,530 @@
+/* ===================================================================
+   HealTrack AI — Design Tokens
+   Direction: a calm clinical-night console. Recovery is the hero metric,
+   shown everywhere as a ring (the signature motif) so a doctor or patient
+   can read "how is this person doing" in one glance, no reading required.
+=================================================================== */
+
+:root {
+  /* Surfaces */
+  --bg: #0a0f1c;
+  --surface: #111a2e;
+  --surface-2: #16213a;
+  --surface-hover: #1a2540;
+  --border: #1f2c47;
+  --border-soft: #182238;
+
+  /* Text */
+  --text: #e8ecf4;
+  --text-muted: #8a93aa;
+  --text-faint: #5b6478;
+
+  /* Signal colors — recovery (teal), caution (amber), risk (rose) */
+  --good: #2dd4bf;
+  --good-soft: rgba(45, 212, 191, 0.12);
+  --warn: #f5a524;
+  --warn-soft: rgba(245, 165, 36, 0.12);
+  --danger: #f23d5c;
+  --danger-soft: rgba(242, 61, 92, 0.12);
+
+  /* Type */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+  --navbar-bg: rgba(17, 26, 46, 0.7);
+}
+
+/* ---------- Light theme overrides ---------- */
+:root[data-theme="light"] {
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #eef1f6;
+  --surface-hover: #e4e9f0;
+  --border: #dde3ec;
+  --border-soft: #e7ebf1;
+
+  --text: #16202e;
+  --text-muted: #5d6779;
+  --text-faint: #8b94a5;
+
+  --good-soft: rgba(13, 148, 136, 0.10);
+  --warn-soft: rgba(217, 119, 6, 0.10);
+  --danger-soft: rgba(220, 38, 60, 0.10);
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 6px 18px rgba(20, 30, 50, 0.08);
+  --navbar-bg: rgba(255, 255, 255, 0.75);
+}
+
+:root[data-theme="light"] body {
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(13, 148, 136, 0.05), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(13, 148, 136, 0.04), transparent 35%);
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(45, 212, 191, 0.06), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(45, 212, 191, 0.04), transparent 35%);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, select {
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+::selection { background: var(--good-soft); }
+
+/* Focus visibility — kept even on a dark theme */
+:focus-visible {
+  outline: 2px solid var(--good);
+  outline-offset: 2px;
+}
+
+/* ---------- Layout shell used by every authenticated page ---------- */
+.app-shell {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 860px) {
+  .app-shell { grid-template-columns: 1fr; }
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.page-body {
+  padding: 28px 32px 48px;
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+  .page-body { padding: 20px 16px 36px; }
+}
+
+/* Leave room at the bottom on mobile so content doesn't sit under the
+   fixed bottom nav bar. */
+@media (max-width: 860px) {
+  .page-body { padding-bottom: 84px; }
+}
+
+.page-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.page-head h1 {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.page-head .page-sub {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  margin-top: 4px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ---------- Generic primitives ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.card-pad { padding: 20px; }
+
+.grid {
+  display: grid;
+  gap: 18px;
+}
+
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+@media (max-width: 980px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-primary {
+  background: var(--good);
+  color: #06201c;
+}
+.btn-primary:hover { background: #38e0cb; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-ghost:hover { border-color: var(--good); color: var(--good); }
+
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-block { width: 100%; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.field input,
+.field select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 13px;
+  font-size: 14.5px;
+  outline-offset: 0;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--good);
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+.field-row .field { flex: 1; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-good { background: var(--good-soft); color: var(--good); }
+.badge-warn { background: var(--warn-soft); color: var(--warn); }
+.badge-danger { background: var(--danger-soft); color: var(--danger); }
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.text-muted { color: var(--text-muted); }
+.text-faint { color: var(--text-faint); }
+.mono { font-family: var(--font-mono); }
+
+/* ===== Loading Skeleton ===== */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-hover) 50%, var(--surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-card {
+  height: 140px;
+  border-radius: var(--radius);
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 8px;
+  width: 80%;
+}
+
+.skeleton-text-sm {
+  height: 10px;
+  width: 50%;
+}
+
+/* ===== Toast Notification ===== */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 860px) {
+  .toast-container { bottom: 84px; right: 16px; left: 16px; }
+}
+
+.toast {
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+  max-width: 320px;
+}
+
+.toast-success { background: var(--good-soft); color: var(--good); border: 1px solid var(--good); }
+.toast-error { background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger); }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===== Sidebar: desktop vs mobile ===== */
+
+/* Desktop sidebar — only this is hidden on mobile, never the whole <aside>
+   blindly, so we always have a navigation fallback. */
+@media (max-width: 860px) {
+  .sidebar-desktop {
+    display: none !important;
+  }
+}
+
+/* Mobile bottom nav — hidden on desktop, fixed bar on small screens */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 6px 4px;
+    justify-content: space-around;
+  }
+}
+
+.mobile-nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 6px 4px;
+  flex: 1;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+/* ===== Smooth transitions ===== */
+.card { transition: border-color 0.2s ease; }
+.card:hover { border-color: var(--border-soft); }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--text-faint);
+  font-size: 13.5px;
+  gap: 8px;
+}
+/* ===== Sidebar ===== */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 248px;
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 20px 0 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 860px) {
+  .sidebar { display: none; }
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  margin-bottom: 28px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--good);
+}
+
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-link:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.sidebar-link.active {
+  background: var(--good-soft);
+  color: var(--good);
+}
+
+/* ===== Mobile bottom nav ===== */
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 6px 4px;
+    justify-content: space-around;
+  }
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 6px 4px;
+  flex: 1;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.mobile-nav-item.active {
+  color: var(--good);
+}
+
+/* ===== Input class (used in AppointmentsPage) ===== */
+.input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  font-size: 14px;
+  color: var(--text);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--good);
+}
