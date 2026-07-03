@@ -251,7 +251,7 @@ export default function PatientDashboard() {
               </div>
 
               {/* Symptom list */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 200, overflowY: 'auto', marginTop: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, maxHeight: 200, overflowY: 'auto', marginTop: 8 }}>
                 {symptoms.length === 0 && (
                   <div className="empty-state" style={{ padding: 20 }}>No symptoms logged yet.</div>
                 )}
