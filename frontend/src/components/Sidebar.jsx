@@ -211,9 +211,9 @@ export default function Sidebar() {
         </div>
       </nav>
 
-      {/* Mobile bottom nav */}
-      <nav className="mobile-nav">
-        {links.slice(0, 4).map(({ to, label, icon }) => (
+      {/* Mobile bottom nav — scrollable row so all links fit */}
+      <nav className="mobile-nav" style={{ overflowX: 'auto', justifyContent: 'flex-start', gap: 0 }}>
+        {links.map(({ to, label, icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -223,8 +223,19 @@ export default function Sidebar() {
             <span>{label}</span>
           </NavLink>
         ))}
-        <button className="mobile-nav-item" onClick={toggleTheme} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-          <span style={{ fontSize: 18 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
+        {role === 'Patient' && (
+          <button
+            className="mobile-nav-item"
+            onClick={handleSOS}
+            disabled={sosSending}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--danger)', flexShrink: 0 }}
+          >
+            <span style={{ fontSize: 16 }}>🚨</span>
+            <span>SOS</span>
+          </button>
+        )}
+        <button className="mobile-nav-item" onClick={toggleTheme} style={{ background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0 }}>
+          <span style={{ fontSize: 16 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
           <span>Theme</span>
         </button>
       </nav>
