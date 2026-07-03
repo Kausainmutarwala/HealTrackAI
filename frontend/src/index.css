@@ -828,3 +828,246 @@ input, select {
     flex-direction: column;
   }
 }
+/* ============================================================
+   HealTrack AI — Mobile Polish Fixes
+   Append this to the END of index.css
+   ============================================================ */
+
+/* Fix left-side content cutoff on mobile */
+@media (max-width: 860px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    overflow-x: hidden;
+  }
+
+  .app-main {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .page-body {
+    padding: 16px 14px 100px;
+    overflow-x: hidden;
+  }
+
+  .page-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .page-head h1 {
+    font-size: 22px;
+  }
+
+  /* Cards full width on mobile */
+  .card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Grids collapse to single column */
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tables scroll horizontally instead of overflowing */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  /* Messages page chat panel height fix */
+  .card[style*="70vh"] {
+    height: 65vh !important;
+  }
+
+  /* Fix any inline grids that use repeat */
+  [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Bottom nav — show more items by reducing padding */
+@media (max-width: 860px) {
+  .mobile-nav {
+    padding: 4px 0;
+    gap: 0;
+  }
+
+  .mobile-nav-item {
+    font-size: 9.5px;
+    padding: 5px 2px;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .mobile-nav-item svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mobile-nav-item span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 52px;
+  }
+}
+
+/* Navbar fix on mobile */
+@media (max-width: 860px) {
+  .navbar {
+    padding: 10px 14px;
+  }
+}
+
+/* Input/select full width on mobile */
+@media (max-width: 600px) {
+  .field input,
+  .field select,
+  .input {
+    font-size: 16px; /* prevents iOS auto-zoom on focus */
+  }
+
+  .btn {
+    padding: 10px 14px;
+    font-size: 13.5px;
+  }
+
+  .field-row {
+    flex-direction: column;
+  }
+}
+
+/* Fix toast position on mobile */
+@media (max-width: 860px) {
+  .toast-container {
+    bottom: 90px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    max-width: 100%;
+  }
+}
+
+/* ── Mobile top bar (hamburger) ── */
+.mobile-topbar {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    grid-column: 1 / -1;
+  }
+
+  /* Remove old mobile-nav bottom bar */
+  .mobile-nav {
+    display: none !important;
+  }
+
+  /* Push page body down to account for topbar */
+  .page-body {
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+}
+
+/* Hide Navbar on mobile — topbar already shows brand */
+@media (max-width: 860px) {
+  .navbar {
+    display: none !important;
+  }
+}
+
+/* Fix app-shell on mobile — topbar takes full width */
+@media (max-width: 860px) {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* ── Symptom form ── */
+.symptom-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.symptom-input {
+  flex: 1;
+  min-width: 120px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.symptom-select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.symptom-btn {
+  padding: 9px 16px;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .symptom-form {
+    flex-direction: column;
+  }
+  .symptom-input,
+  .symptom-select,
+  .symptom-btn {
+    width: 100%;
+    flex: unset;
+  }
+}
+
+/* ── Symptom list item ── */
+.symptom-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 13px;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Medicine list item ── */
+.medicine-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  min-width: 0;
+  overflow: hidden;
+}
