@@ -813,8 +813,18 @@ input, select {
     padding-bottom: 40px;
   }
 }
+
+/* Hide Navbar on mobile — topbar already shows brand */
 @media (max-width: 860px) {
   .navbar {
-    display: none;
+    display: none !important;
+  }
+}
+
+/* Fix app-shell on mobile — topbar takes full width */
+@media (max-width: 860px) {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
   }
 }

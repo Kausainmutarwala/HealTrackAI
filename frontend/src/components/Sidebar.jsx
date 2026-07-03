@@ -132,21 +132,21 @@ export default function Sidebar() {
 
       {/* ── Mobile: top bar with hamburger ── */}
       <div className="mobile-topbar">
-        <div className="sidebar-brand" style={{ margin: 0 }}>
-          <span className="brand-dot" />
-          HealTrack<span style={{ color: 'var(--good)' }}>AI</span>
-        </div>
         <button
           onClick={() => setDrawerOpen(true)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text)', padding: 6 }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text)', padding: '6px 6px 6px 0', flexShrink: 0 }}
           aria-label="Open menu"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="3" y1="6" x2="21" y2="6" />
             <line x1="3" y1="12" x2="21" y2="12" />
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
+        <div className="sidebar-brand" style={{ margin: 0 }}>
+          <span className="brand-dot" />
+          HealTrack<span style={{ color: 'var(--good)' }}>AI</span>
+        </div>
       </div>
 
       {/* ── Mobile drawer overlay ── */}
