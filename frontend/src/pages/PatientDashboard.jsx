@@ -262,7 +262,7 @@ export default function PatientDashboard() {
                       <span className={`badge ${s.severity === 'Severe' ? 'badge-danger' : s.severity === 'Moderate' ? 'badge-warn' : 'badge-good'}`} style={{ fontSize: 11 }}>
                         {s.severity}
                       </span>
-                      <span className="text-faint" style={{ fontSize: 11, display: 'none' }} id="sym-date">{s.loggedAt}</span>
+                      <span className="text-faint" style={{ fontSize: 11 }}>{s.loggedAt}</span>
                       <button onClick={() => deleteSymptom(s.id)} style={{ background: 'transparent', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: '0 2px' }}>×</button>
                     </div>
                   </div>
