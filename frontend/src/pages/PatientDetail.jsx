@@ -6,6 +6,7 @@ import RecoveryCard from '../components/RecoveryCard';
 import RiskCard from '../components/RiskCard';
 import RecoveryChart from '../components/RecoveryChart';
 import CaseSummaryCard from '../components/CaseSummaryCard';
+import DischargeSummaryModal from '../components/DischargeSummaryModal';
 import { getPatientDetail } from '../services/api';
 
 const RANGE_OPTIONS = [
@@ -24,6 +25,7 @@ export default function PatientDetail() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [range, setRange] = useState(7);
+  const [showDischarge, setShowDischarge] = useState(false);
 
   // Came here from /admin or /doctor — go back to wherever we came from.
   const backTo = location.pathname.startsWith('/admin') ? '/admin' : '/doctor';
@@ -53,111 +55,62 @@ export default function PatientDetail() {
               >
                 ← Back to patients
               </button>
-              <h1>{data ? data.patient.name : 'Patient'}</h1>
-              <p className="page-sub">{data ? `Age ${data.patient.age}` : 'Loading…'}</p>
+              <h1>{data ? data.name : 'Patient'}</h1>
             </div>
+            {data && (
+              <button
+                className="btn btn-primary"
+                style={{ fontSize: 13 }}
+                onClick={() => setShowDischarge(true)}
+              >
+                📋 Discharge Summary
+              </button>
+            )}
           </div>
 
-          {error && <p style={{ color: 'var(--danger)' }}>{error}</p>}
+          {showDischarge && data && (
+            <DischargeSummaryModal
+              patient={data}
+              onClose={() => setShowDischarge(false)}
+            />
+          )}
 
-          {!data && !error && (
-            <>
-              <div className="grid grid-2" style={{ marginBottom: 18 }}>
-                <div className="skeleton skeleton-card" />
-                <div className="skeleton skeleton-card" />
-              </div>
-              <div className="skeleton" style={{ height: 220, borderRadius: 'var(--radius)' }} />
-            </>
+          {error && (
+            <div className="card card-pad">
+              <div className="empty-state">{error}</div>
+            </div>
+          )}
+
+          {!error && !data && (
+            <div className="card card-pad">
+              <div className="skeleton skeleton-text" style={{ width: '40%', marginBottom: 12 }} />
+              <div className="skeleton skeleton-text" style={{ width: '60%' }} />
+            </div>
           )}
 
           {data && (
             <>
-              <CaseSummaryCard
-                patient={{
-                  name: data.patient.name,
-                  age: data.patient.age,
-                  recovery_percent: data.patient.recoveryPercent,
-                  risk_level: data.patient.riskLevel,
-                  medicine_adherence: data.patient.medicineAdherence,
-                  symptoms: data.symptoms,
-                  weekly_snapshots: data.weeklySnapshots,
-                }}
-              />
+              <CaseSummaryCard patient={data} />
 
-              <div className="grid grid-2" style={{ marginBottom: 18 }}>
-                <RecoveryCard percent={data.patient.recoveryPercent} trend={data.patient.recoveryTrend} />
-                <RiskCard level={data.patient.riskLevel} note={data.patient.riskNote} />
+              <div className="grid grid-2" style={{ gap: 18, marginBottom: 18 }}>
+                <RecoveryCard percent={data.recovery_percent} />
+                <RiskCard level={data.risk_level} note={data.risk_note} />
               </div>
 
-              <div style={{ marginBottom: 18 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span className="eyebrow">Recovery trend</span>
+              <div className="card card-pad">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <span className="eyebrow">Recovery Trend</span>
                   <select
                     value={range}
                     onChange={(e) => setRange(Number(e.target.value))}
-                    style={{
-                      background: 'var(--surface-2)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-sm)',
-                      padding: '6px 10px',
-                      fontSize: 12.5,
-                      color: 'var(--text)',
-                    }}
+                    style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '5px 8px', fontSize: 12.5, color: 'var(--text)' }}
                   >
-                    {RANGE_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    {RANGE_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
                     ))}
                   </select>
                 </div>
-                <RecoveryChart data={visibleTrend} title="" color="var(--good)" max={100} />
-              </div>
-
-              <div className="grid grid-2" style={{ gap: 18 }}>
-                <div className="card card-pad">
-                  <span className="eyebrow">Logged symptoms</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14 }}>
-                    {data.symptoms.length === 0 && (
-                      <div className="empty-state" style={{ padding: 16 }}>
-                        <span style={{ fontSize: 20 }}>📋</span>
-                        <span>No symptoms logged yet.</span>
-                      </div>
-                    )}
-                    {[...data.symptoms].reverse().map((s) => (
-                      <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', fontSize: 13 }}>
-                        <span>{s.label}</span>
-                        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                          <span className={`badge ${s.severity === 'Severe' ? 'badge-danger' : s.severity === 'Moderate' ? 'badge-warn' : 'badge-good'}`} style={{ fontSize: 11 }}>
-                            {s.severity}
-                          </span>
-                          <span className="text-faint">{s.loggedAt}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="card card-pad">
-                  <span className="eyebrow">Medicines</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14 }}>
-                    {data.medicines.length === 0 && (
-                      <div className="empty-state" style={{ padding: 16 }}>
-                        <span style={{ fontSize: 20 }}>💊</span>
-                        <span>No medicines added yet.</span>
-                      </div>
-                    )}
-                    {data.medicines.map((m) => (
-                      <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)' }}>
-                        <span style={{ flex: 1, fontSize: 14, textDecoration: m.taken ? 'line-through' : 'none', opacity: m.taken ? 0.6 : 1 }}>
-                          {m.name}
-                        </span>
-                        <span className="text-faint mono" style={{ fontSize: 12 }}>{m.time}</span>
-                        <span className={`badge ${m.taken ? 'badge-good' : 'badge-warn'}`} style={{ fontSize: 11 }}>
-                          {m.taken ? 'Taken' : 'Pending'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <RecoveryChart data={visibleTrend} />
               </div>
             </>
           )}
