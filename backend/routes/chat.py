@@ -449,3 +449,91 @@ async def case_summary(payload: CaseSummaryRequest, user: dict = Depends(get_cur
         print(f"AI case-summary failed, falling back: {e}")
 
     return fallback
+# ===== Append this to routes/chat.py =====
+
+class DischargeSummaryRequest(BaseModel):
+    patient_name: str
+    age: Optional[int] = None
+    recovery_percent: Optional[float] = None
+    risk_level: Optional[str] = None
+    medicine_adherence: Optional[float] = None
+    symptoms: list[dict] = []
+    medicines: list[dict] = []
+    weekly_snapshots: list[dict] = []
+    doctor_notes: Optional[str] = ""
+
+
+@router.post("/discharge-summary")
+async def discharge_summary(payload: DischargeSummaryRequest, user: dict = Depends(get_current_user)):
+    """Generates a professional discharge summary draft for a doctor to
+    review and edit before sharing with the patient."""
+
+    if user["role"] not in ("Doctor", "Admin"):
+        raise HTTPException(status_code=403, detail="Only doctors can generate discharge summaries.")
+
+    fallback_text = f"""DISCHARGE SUMMARY
+
+Patient: {payload.patient_name}
+Age: {payload.age or 'N/A'}
+Final Recovery: {payload.recovery_percent or 'N/A'}%
+Risk Level at Discharge: {payload.risk_level or 'N/A'}
+Medicine Adherence: {round((payload.medicine_adherence or 0) * 100)}%
+
+Symptoms Reported: {', '.join(s.get('label','?') for s in payload.symptoms) or 'None'}
+
+Current Medicines: {', '.join(m.get('name','?') for m in payload.medicines) or 'None'}
+
+Doctor's Notes: {payload.doctor_notes or 'N/A'}
+
+Please follow up with your doctor as advised."""
+
+    if not GROQ_API_KEY:
+        return {"summary": fallback_text, "source": "fallback"}
+
+    symptom_list = ", ".join(f'{s.get("label","?")} ({s.get("severity","?")})' for s in payload.symptoms) or "none"
+    medicine_list = ", ".join(m.get("name", "?") for m in payload.medicines) or "none"
+    trend = ", ".join(f'Week {w.get("week")}: {w.get("recovery_percent")}%' for w in payload.weekly_snapshots[-4:]) or "no weekly data"
+
+    prompt = (
+        f"Write a professional hospital discharge summary for the following patient.\n\n"
+        f"Patient: {payload.patient_name}, Age: {payload.age or 'unknown'}\n"
+        f"Final recovery: {payload.recovery_percent or 'unknown'}%, Risk: {payload.risk_level or 'unknown'}\n"
+        f"Medicine adherence: {round((payload.medicine_adherence or 0) * 100)}%\n"
+        f"Symptoms during stay: {symptom_list}\n"
+        f"Medicines prescribed: {medicine_list}\n"
+        f"Recovery trend: {trend}\n"
+        f"Doctor's additional notes: {payload.doctor_notes or 'none'}\n\n"
+        "Format it as a clean professional discharge summary with these sections:\n"
+        "1. Patient Information\n"
+        "2. Summary of Condition\n"
+        "3. Treatment & Medicines\n"
+        "4. Recovery Progress\n"
+        "5. Discharge Instructions\n"
+        "6. Follow-up Recommendations\n\n"
+        "Keep it concise, professional, and patient-friendly. Plain text, no markdown."
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            res = await client.post(
+                GROQ_URL,
+                headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+                json={
+                    "model": GROQ_MODEL,
+                    "messages": [
+                        {"role": "system", "content": "You are a medical professional writing discharge summaries. Be clear, professional, and compassionate."},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "max_tokens": 600,
+                },
+            )
+        if res.status_code == 200:
+            text = res.json()["choices"][0]["message"]["content"].strip()
+            if text:
+                return {"summary": text, "source": "ai"}
+        else:
+            print(f"Groq API error {res.status_code} (discharge-summary): {res.text}")
+    except Exception as e:
+        print(f"AI discharge-summary failed: {e}")
+
+    return {"summary": fallback_text, "source": "fallback"}

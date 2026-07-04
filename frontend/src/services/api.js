@@ -559,3 +559,17 @@ export async function getCaseSummary(patientData) {
   }
   return res.json();
 }
+// ===== Discharge Summary =====
+
+export async function generateDischargeSummary(patientData) {
+  const res = await fetch(`${BASE_URL}/chat/discharge-summary`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(patientData),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Failed to generate discharge summary');
+  }
+  return res.json();
+}
