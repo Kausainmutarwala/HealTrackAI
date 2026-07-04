@@ -9,15 +9,16 @@ export default function CaseSummaryCard({ patient }) {
   const handleGenerate = async () => {
     setLoading(true);
     try {
-      const data = await getCaseSummary({
-        patient_name: patient.name,
-        age: patient.age,
-        recovery_percent: patient.recovery_percent,
-        risk_level: patient.risk_level,
-        medicine_adherence: patient.medicine_adherence,
+      const payload = {
+        patient_name: patient.name || patient.patient_name || 'Unknown',
+        age: patient.age ?? null,
+        recovery_percent: patient.recovery_percent ?? patient.recoveryPercent ?? null,
+        risk_level: patient.risk_level ?? patient.riskLevel ?? null,
+        medicine_adherence: patient.medicine_adherence ?? patient.medicineAdherence ?? null,
         symptoms: patient.symptoms || [],
         weekly_snapshots: patient.weekly_snapshots || [],
-      });
+      };
+      const data = await getCaseSummary(payload);
       setSummary(data);
     } catch (err) {
       toast.error(err.message || 'Could not generate case summary');
@@ -39,7 +40,6 @@ export default function CaseSummaryCard({ patient }) {
           {loading ? 'Generating…' : summary ? 'Refresh' : '✨ Generate'}
         </button>
       </div>
-
       {summary && (
         <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{summary.summary}</p>
       )}
