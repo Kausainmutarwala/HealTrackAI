@@ -15,6 +15,7 @@ import {
 import { toast } from '../components/Toast';
 import ChatBox from '../components/ChatBox';
 import MedicineCountdown from '../components/MedicineCountdown';
+import useMedicineReminder from '../hooks/useMedicineReminder';
 
 const ALL_SYMPTOMS = [
   'Fever','Fatigue','Weakness','Chills','Night sweats','Weight loss','Weight gain','Loss of appetite',
@@ -88,6 +89,9 @@ export default function PatientDashboard() {
   }, []);
 
   const patientId = data?.patient?.id;
+
+  // 💊 Medicine reminder — browser push notification when dose is due
+  useMedicineReminder(medicines);
   const symFiltered = newSymptom.length > 0
     ? ALL_SYMPTOMS.filter(s => s.toLowerCase().includes(newSymptom.toLowerCase()))
     : [];
