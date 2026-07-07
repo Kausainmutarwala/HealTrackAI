@@ -11,9 +11,9 @@
 
 ## 🚀 Live Demo
 
-- **Frontend:** [healtrack-ai.vercel.app](https://healtrack-ai.vercel.app)
-- **Backend API:** [healtrack-backend.onrender.com](https://healtrack-backend.onrender.com)
-- **API Docs:** [healtrack-backend.onrender.com/docs](https://healtrack-backend.onrender.com/docs)
+- **Frontend:** [heal-track-ai-rho.vercel.app](https://heal-track-ai-rho.vercel.app)
+- **Backend API:** [healtrack-backend-gtb4.onrender.com](https://healtrack-backend-gtb4.onrender.com)
+- **API Docs:** [healtrack-backend-gtb4.onrender.com/docs](https://healtrack-backend-gtb4.onrender.com/docs)
 
 ---
 
@@ -203,12 +203,12 @@ JWT_SECRET=your-secret-key
 JWT_ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=1440
 GROQ_API_KEY=gsk_...
-BACKEND_URL=https://your-render-url.onrender.com
+BACKEND_URL=https://healtrack-backend-gtb4.onrender.com
 ```
 
 ### Frontend (`frontend/.env`)
 ```env
-VITE_API_URL=https://your-render-url.onrender.com
+VITE_API_URL=https://healtrack-backend-gtb4.onrender.com
 ```
 
 ---
